@@ -1,0 +1,12 @@
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/integration/CharactersClient.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/util/CharactersUtil.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/model/CharactersData.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/MarvelApiApplication.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/controller/CharactersController.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/model/CharactersResults.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/model/Thumbnail.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/model/Characters.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/configuration/RouteConfiguration.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/configuration/SwaggerConfig.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/runner/AppRunner.java
+/home/ruslan/Загрузки/marvel-api-master (1)/marvel-api-master/src/main/java/com/jm/marvel/integration/CharactersClientImpl.java
