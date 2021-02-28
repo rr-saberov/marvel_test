@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/marvel?&useSSL=false&serverTimezone=UTC
+    username: postgres
+    password: newuserR-1
+  liquibase:
+    change-log: classpath:databaseChangeLog.xml
+  jpa:
+    properties:
+      hibernate:
+        spring.jpa.hibernate.ddl-auto: enable
+        ##Сменить на update после создания таблиц

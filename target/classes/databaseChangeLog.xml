@@ -1,0 +1,46 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="someIds" author="ruslan">
+        <createTable tableName="characters">
+                <column autoIncrement="true" name="id" type="serial">
+                        <constraints primaryKey="true"/>
+                </column>
+        </createTable>
+        <createTable tableName="thumbnail">
+            <column autoIncrement="true" name="id" type="serial">
+                    <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="comics">
+            <column autoIncrement="true" name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="characters_comics">
+            <column name="character_id" type="serial"/>
+            <column name="comics_id" type="serial"/>
+        </createTable>
+
+        <addColumn tableName="characters">
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="text"/>
+            <column name="thumbnail_id" type="integer"/>
+        </addColumn>
+
+        <addColumn tableName="thumbnail">
+            <column name="path" type="text"/>
+            <column name="extension" type="varchar(255)"/>
+        </addColumn>        
+        
+        <addColumn tableName="comics">
+            <column name="title" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
