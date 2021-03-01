@@ -1,5 +1,6 @@
 package com.marvel.example.controllers;
 
+import com.marvel.example.exception_handling.NoSuchCharactersException;
 import com.marvel.example.model.Characters;
 import com.marvel.example.model.Comics;
 import com.marvel.example.service.CharactersService;
@@ -33,12 +34,18 @@ public class CharactersController {
 	@GetMapping("/{characterId}")
 	@ApiOperation("method to get character by id")
 	public Characters characterById(@PathVariable("characterId") int id) {
+		if (charactersService.getCharacterById(id) == null) {
+			throw new NoSuchCharactersException("There is no character with ID = " + id + " in Database");
+		}
 		return charactersService.getCharacterById(id);
 	}
 
 	@GetMapping("/{characterId}/comics")
 	@ApiOperation("method to get comics with character")
 	public List<Comics> comicsWithCharacters(@PathVariable("characterId") int id) {
+		if (charactersService.getCharacterById(id) == null) {
+			throw new NoSuchCharactersException("There is no character with ID = " + id + " in Database");
+		}
 		return charactersService.getComicsWithChar(id);
 	}
 

@@ -2,7 +2,6 @@ package com.marvel.example.repository;
 
 import com.marvel.example.model.Characters;
 import com.marvel.example.model.Comics;
-import com.marvel.example.model.Thumbnail;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
