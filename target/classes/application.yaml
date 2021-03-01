@@ -9,5 +9,5 @@ spring:
   jpa:
     properties:
       hibernate:
-        spring.jpa.hibernate.ddl-auto: enable
+        spring.jpa.hibernate.ddl-auto: update
         ##Сменить на update после создания таблиц

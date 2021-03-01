@@ -9,38 +9,31 @@
 
     <changeSet id="someIds" author="ruslan">
         <createTable tableName="characters">
-                <column autoIncrement="true" name="id" type="serial">
+                <column autoIncrement="true" name="character_id" type="serial">
                         <constraints primaryKey="true"/>
                 </column>
         </createTable>
-        <createTable tableName="thumbnail">
-            <column autoIncrement="true" name="id" type="serial">
-                    <constraints primaryKey="true"/>
-            </column>
-        </createTable>
         <createTable tableName="comics">
-            <column autoIncrement="true" name="id" type="serial">
+            <column autoIncrement="true" name="comics_id" type="serial">
                 <constraints primaryKey="true"/>
             </column>
-        </createTable>
-        <createTable tableName="characters_comics">
-            <column name="character_id" type="serial"/>
-            <column name="comics_id" type="serial"/>
         </createTable>
 
         <addColumn tableName="characters">
             <column name="name" type="varchar(255)"/>
-            <column name="description" type="text"/>
-            <column name="thumbnail_id" type="integer"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="path" type="varchar(255)"/>
+            <column name="extension" type="varchar(255)"/>
+            <column name="comics_id" type="integer">
+                <constraints foreignKeyName="FK_characters_comics" referencedTableName="comics" referencedColumnNames="comics_id"/>
+            </column>
         </addColumn>
 
-        <addColumn tableName="thumbnail">
-            <column name="path" type="text"/>
-            <column name="extension" type="varchar(255)"/>
-        </addColumn>        
-        
         <addColumn tableName="comics">
             <column name="title" type="varchar(255)"/>
+            <column name="character_id" type="integer">
+                <constraints foreignKeyName="FK_comics_characters" referencedTableName="characters" referencedColumnNames="character_id"/>
+            </column>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
