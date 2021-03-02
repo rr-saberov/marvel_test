@@ -9,11 +9,10 @@
 		<version>2.4.2</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.jm.marvel</groupId>
+	<groupId>com.marvel.example</groupId>
 	<artifactId>marvel-api</artifactId>
 	<version>0.0.1</version>
 	<name>marvel-api</name>
-
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -32,6 +31,40 @@
 						</systemProperties>
 						<logging>info</logging>
 					</configuration>
+				</plugin>
+<!--				<plugin>-->
+<!--					<groupId>org.apache.maven.plugins</groupId>-->
+<!--					<artifactId>maven-jar-plugin</artifactId>-->
+<!--					<version>3.2.0</version>-->
+<!--					<configuration>-->
+<!--						<archive>-->
+<!--							<manifest>-->
+<!--								<mainClass>com.marvel.example.MarvelApiApplication</mainClass>-->
+<!--							</manifest>-->
+<!--						</archive>-->
+<!--					</configuration>-->
+<!--				</plugin>-->
+
+
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>com.marvel.example.MarvelApiApplication</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
+
+
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -55,6 +88,10 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
