@@ -1,23 +1,23 @@
 package com.marvel.example.controllers;
 
-import com.marvel.example.exception_handling.NoSuchComicsException;
-import com.marvel.example.model.Characters;
-import com.marvel.example.model.Comics;
+import com.marvel.example.api.response.ComicsResponse;
+import com.marvel.example.api.response.SingleComicsResponse;
+import com.marvel.example.api.response.UrlsResponse;
+import com.marvel.example.exceptions.ComicsNotFoundException;
 import com.marvel.example.service.ComicsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Api("comics data")
 @RestController
-@RequestMapping("/v1/public/comics")
+@RequestMapping("/public/comics")
 public class ComicsController {
 
-    private Logger logger = Logger.getLogger(CharactersController.class);
+    private Logger logger = Logger.getLogger(ComicsController.class);
     private ComicsService comicsService;
 
     @Autowired
@@ -27,43 +27,65 @@ public class ComicsController {
 
     @GetMapping
     @ApiOperation("method to get all comics")
-    public List<Comics> comics() {
-        return comicsService.getAllComics();
+    public ResponseEntity<ComicsResponse> getComics(@RequestParam(defaultValue = "0") Integer offset,
+                                                    @RequestParam(defaultValue = "20") Integer limit) {
+        logger.info("get all comics page");
+        return ResponseEntity.ok(comicsService.getComicsOrderById(offset, limit));
     }
 
-    @GetMapping("/{comicsId}")
+    @GetMapping("/search")
+    @ApiOperation("method to search comics by user query")
+    public ResponseEntity<ComicsResponse> getComicsByQuery(@RequestParam(defaultValue = "") String query,
+                                                           @RequestParam(defaultValue = "0") Integer offset,
+                                                           @RequestParam(defaultValue = "20") Integer limit) {
+        logger.info("try to search comics with query: " + query);
+        return ResponseEntity.ok(comicsService.getComicsByQuery(query, offset, limit));
+    }
+
+    @GetMapping("/{ID}")
     @ApiOperation("method to get comics by id")
-    public Comics comicsById(@PathVariable("comicsId") int id) {
-        if (comicsService.getComicsById(id) == null) {
-            throw new NoSuchComicsException("There is no comics with ID = " + id + " in Database");
-        }
-        return comicsService.getComicsById(id);
+    public ResponseEntity<SingleComicsResponse> getComicsById(@PathVariable("ID") Integer id) {
+        logger.info("try to get comics with id: " + id);
+        return ResponseEntity.ok(comicsService.getComicsById(id));
     }
 
-    @GetMapping("/{comicsId}/comics")
-    @ApiOperation("method to get comics with character")
-    public List<Characters> comicsWithCharacters(@PathVariable("comicsId") int id) {
-        if (comicsService.getComicsById(id) == null) {
-            throw new NoSuchComicsException("There is no comics with ID = " + id + " in Database");
-        }
-        return comicsService.getComicsWithCharacter(id);
-    }
-
-    @PostMapping("/saveComics")
-    @ApiOperation("method to save comics")
-    public Comics saveComics(@RequestBody Comics comics) {
-        return comicsService.saveComics(comics);
+    @PostMapping("/save")
+    @ApiOperation("method to save new comics")
+    public ResponseEntity<SingleComicsResponse> saveComics(@RequestParam String title,
+                                                           @RequestParam String isbn,
+                                                           @RequestParam String type,
+                                                           @RequestParam String url) {
+        logger.info("comics with title: " + title + " saved");
+        comicsService.saveComics(title, isbn, type, url);
+        return ResponseEntity.ok(new SingleComicsResponse(title, isbn, new UrlsResponse(type, url)));
     }
 
     @PutMapping("/update")
     @ApiOperation("method to update comics")
-    public Comics updateComics(@RequestBody Comics comics) {
-        return comicsService.saveComics(comics);
+    public ResponseEntity<SingleComicsResponse> updateComics(@RequestParam Integer id,
+                                                             @RequestParam String title,
+                                                             @RequestParam String isbn,
+                                                             @RequestParam String type,
+                                                             @RequestParam String url) throws ComicsNotFoundException {
+        if (comicsService.getComicsById(id) != null) {
+            comicsService.updateComics(id, title, isbn, type, url);
+            logger.info("update success");
+            return ResponseEntity.ok(new SingleComicsResponse(id, title, isbn, new UrlsResponse(type, url)));
+        } else {
+            logger.info("comics not found");
+            throw new ComicsNotFoundException("Comics to update not found!");
+        }
     }
 
-    @PostMapping("/deleteComics")
+    @DeleteMapping("/delete")
     @ApiOperation("method to delete comics")
-    public void deleteComics(Integer id) {
-        comicsService.deleteComics(id);
+    public ResponseEntity<SingleComicsResponse> deleteComics(@RequestParam Integer id) throws ComicsNotFoundException {
+        if (comicsService.getComicsById(id) != null) {
+            logger.info("delete success");
+            return ResponseEntity.ok(comicsService.deleteComics(id));
+        } else {
+            logger.info("comics not found");
+            throw new ComicsNotFoundException("Comics to delete not found!");
+        }
     }
 }

@@ -4,10 +4,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/marvel?&useSSL=false&serverTimezone=UTC
     username: postgres
     password: newuserR-1
+    initialization-mode: always
   liquibase:
-    change-log: classpath:databaseChangeLog.xml
+    change-log: classpath:db.changelog/databaseChangeLog-master.xml
+    enabled: true
   jpa:
-    properties:
-      hibernate:
-        spring.jpa.hibernate.ddl-auto: update
-        ##Сменить на update после создания таблиц
+    hibernate:
+        ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

@@ -1,18 +1,23 @@
 package com.marvel.example.service;
 
-import com.marvel.example.model.Characters;
-import com.marvel.example.model.Comics;
+import com.marvel.example.api.response.CharactersResponse;
+import com.marvel.example.api.response.ComicsResponse;
+import com.marvel.example.api.response.SingleComicsResponse;
+import com.marvel.example.api.response.UrlsResponse;
+import com.marvel.example.entity.Comics;
+import com.marvel.example.entity.Urls;
 import com.marvel.example.repository.ComicsRepository;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ComicsService {
 
-    private final Logger logger = Logger.getLogger(CharactersService.class);
     private final ComicsRepository comicsRepository;
 
     @Autowired
@@ -20,24 +25,76 @@ public class ComicsService {
         this.comicsRepository = comicsRepository;
     }
 
-    public List<Comics> getAllComics() {
-        return comicsRepository.retrieveAll();
+    public ComicsResponse getComicsOrderById(Integer offset, Integer limit) {
+        Pageable nextPage = PageRequest.of(offset, limit);
+        ComicsResponse comicsResponse = new ComicsResponse();
+        Page<Comics> comicsPage =
+                comicsRepository.getAllComics(nextPage);
+        comicsResponse.setCount(comicsPage.getTotalElements());
+        comicsResponse.setComics(comicsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return comicsResponse;
     }
 
-    public Comics getComicsById(Integer id) {
-        return comicsRepository.searchComicsById(id);
+    public ComicsResponse getComicsByQuery(String query, Integer offset, Integer limit) {
+        Pageable nextPage = PageRequest.of(offset, limit);
+        ComicsResponse comicsResponse = new ComicsResponse();
+        Page<Comics> comicsPage =
+                comicsRepository.searchComics(query, nextPage);
+        comicsResponse.setCount(comicsPage.getTotalElements());
+        comicsResponse.setComics(comicsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return comicsResponse;
     }
 
-    public List<Characters> getComicsWithCharacter(Integer id) {
-        return comicsRepository.searchCharactersInComics(id);
+    public SingleComicsResponse getComicsById(Integer id) {
+        return convertToResponse(comicsRepository.getComicsById(id));
     }
 
-    public Comics saveComics(Comics comics) {
-        return comicsRepository.addComics(comics);
+    //TODO !!!
+    public CharactersResponse getCharactersInComics(Integer offset, Integer limit, Integer id) {
+        return null;
     }
 
-    public void deleteComics(Integer id) {
-        comicsRepository.removeComicsById(id);
+    public void saveComics(String title, String isbn, String type, String url) {
+        comicsRepository.save(convertToComics(title, isbn, type, url));
+    }
+
+    public void updateComics(Integer id, String title, String isbn, String type, String url) {
+        comicsRepository.save(convertToComics(id, title, isbn, type, url));
+    }
+
+    public SingleComicsResponse deleteComics(Integer id) {
+        SingleComicsResponse singleComicsResponse = convertToResponse(comicsRepository.getComicsById(id));
+        comicsRepository.deleteById(id);
+        return singleComicsResponse;
+    }
+
+    private Comics convertToComics(String title, String isbn, String type, String url) {
+        Comics comics = new Comics();
+        comics.setTitle(title);
+        comics.setIsbn(isbn);
+        comics.setComicsUrls(new Urls(type, url));
+        return comics;
+    }
+
+    private Comics convertToComics(Integer id, String title, String isbn, String type, String url) {
+        Comics comics = new Comics();
+        comics.setId(id);
+        comics.setTitle(title);
+        comics.setIsbn(isbn);
+        comics.setComicsUrls(new Urls(type, url));
+        return comics;
+    }
+
+    private SingleComicsResponse convertToResponse(Comics comics) {
+        SingleComicsResponse singleComicsResponse = new SingleComicsResponse();
+        UrlsResponse urlsResponse = new UrlsResponse();
+        urlsResponse.setType(comics.getComicsUrls().getType());
+        urlsResponse.setUrl(comics.getComicsUrls().getUrl());
+        singleComicsResponse.setId(comics.getId());
+        singleComicsResponse.setIsbn(comics.getIsbn());
+        singleComicsResponse.setTitle(comics.getTitle());
+        singleComicsResponse.setUrls(urlsResponse);
+        return singleComicsResponse;
     }
 }
 

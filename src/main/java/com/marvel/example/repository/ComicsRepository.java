@@ -1,61 +1,36 @@
 package com.marvel.example.repository;
 
-import com.marvel.example.model.Characters;
-import com.marvel.example.model.Comics;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import com.marvel.example.entity.Comics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 @Repository
-public class ComicsRepository {
-    private final Logger logger = Logger.getLogger(ComicsRepository.class);
+@EnableJpaRepositories
+public interface ComicsRepository extends JpaRepository<Comics, Integer> {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    @Query("SELECT c " +
+            "FROM Comics c")
+    Page<Comics> getAllComics(Pageable pageable);
 
-    @Autowired
-    public ComicsRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    @Query(value = "SELECT * FROM comics " +
+            "WHERE title LIKE %:query% " +
+            "ORDER BY id", nativeQuery = true)
+    Page<Comics> searchComics(@Param("query") String query, Pageable pageable);
 
-    public List<Comics> retrieveAll() {
-        List<Comics> comicsList = jdbcTemplate.query("SELECT * FROM comics", (ResultSet rs, int rowNum) -> {
-            Comics comics = new Comics();
-            comics.setId(rs.getInt("id"));
-            comics.setTitle(rs.getString("title"));
-            return comics;
-        });
-        return new ArrayList<>(comicsList);
-    }
+    @Query("SELECT comics " +
+            "FROM Comics comics " +
+            "WHERE comics.id = :id ")
+    Comics getComicsById(@Param("id") Integer id);
 
-    public Comics searchComicsById(Integer comicsId) {
-        return retrieveAll().stream().filter(comics ->
-                comics.getId() == comicsId).findFirst().get();
-    }
+    void deleteById(Integer id);
 
-    public List<Characters> searchCharactersInComics(Integer comicsId) {
-        return retrieveAll().stream().filter(comics ->
-                comics.getId() == comicsId).findFirst().get().getCharacters();
-    }
-
-    public Comics addComics(Comics comics) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("title", comics.getTitle());
-        jdbcTemplate.update("INSERT INTO comics(title) VALUES(:title)", parameterSource);
-        logger.info("store new comics " + comics);
-        return comics;
-    }
-
-    public boolean removeComicsById(Integer id) {
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("id", id);
-        jdbcTemplate.update("DELETE FROM comics WHERE id = :id", parameterSource);
-        logger.info("remove comics completed");
-        return true;
-    }
 }
+
+
+
+

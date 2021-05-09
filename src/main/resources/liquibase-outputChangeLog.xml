@@ -1,0 +1,43 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+
+    <changeSet author="ruslan (generated)" id="1620142898872-1">
+        <createSequence sequenceName="characters_character_id_seq"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1620142898872-2">
+        <createSequence sequenceName="characters_comics_character_id_seq"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1620142898872-3">
+        <createSequence sequenceName="characters_comics_comics_id_seq"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1620142898872-4">
+        <createTable tableName="characters">
+            <column autoIncrement="true" name="character_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="characters_pkey"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="extension" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="path" type="VARCHAR(255)"/>
+            <column name="thumbnail_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1620142898872-5">
+        <createTable tableName="characters_comics">
+            <column autoIncrement="true" name="character_id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="comics_id" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
